@@ -3,7 +3,7 @@
   import FaRegClock from "svelte-icons/fa/FaRegClock.svelte";
   import Track from "$lib/components/ui/commons/track.svelte";
   import { index, trackList, search } from "$lib/stores/store.js";
-  export let playlist = false;
+  export let playlist;
   $: playingTrackIndex =
     $trackList.length > 0
       ? playlist.tracks.data.findIndex(
