@@ -6,6 +6,7 @@
 
   const redirectToResultPage = () => {
     goto(`/search?q=${search}`);
+    search = "";
   };
 </script>
 
