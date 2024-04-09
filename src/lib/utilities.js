@@ -7,3 +7,8 @@ export const format = (seconds) => {
 
 	return `${minutes}:${seconds}`;
 };
+
+// Capitalize each word in a string
+export const capitalize = (string) => {
+	return string.replace(/\b\w/g, (char) => char.toUpperCase());
+}
