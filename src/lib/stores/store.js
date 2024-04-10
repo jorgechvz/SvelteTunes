@@ -5,6 +5,7 @@ export const status = writable("default");
 export const isPlaying = writable(false);
 export const index = writable(0);
 export const search = writable(''); 
+export const currentPage = writable(1); 
 
 export const trackList = writable([
   {
@@ -22,3 +23,4 @@ export const addTrack = (track) => {
 export const setTrack = (trackIndex) => {
   index.set(trackIndex);
 };
+

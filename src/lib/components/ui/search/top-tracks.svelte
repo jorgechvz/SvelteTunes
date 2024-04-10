@@ -6,6 +6,7 @@
   import Track from "$lib/components/ui/commons/track.svelte";
   import { Button } from "$lib/components/ui/button/index.js";
   import { index, trackList } from "$lib/stores/store.js";
+  import { convertTime } from "$lib/utilities";
   $: playingTrackIndex =
     $trackList.length > 0
       ? bestTracks.data.findIndex(
@@ -14,11 +15,6 @@
             track.artist.name === $trackList[$index].artist
         )
       : -1;
-  function convertTime(time) {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes}:${seconds}`;
-  }
 </script>
 
 <div class="flex items-center gap-4">

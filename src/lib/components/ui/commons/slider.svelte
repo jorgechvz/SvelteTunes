@@ -237,6 +237,9 @@
 
 <!-- {id} - for the slider...not sure when I would need this -->
 <div
+  role="slider"
+  tabindex="0"
+  aria-valuenow="{value}"
   class="slider"
   bind:this={slider}
   class:square={square === true}

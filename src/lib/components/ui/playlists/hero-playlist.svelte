@@ -1,10 +1,7 @@
 <script>
+  import { convertTimeWithHours } from "$lib/utilities";
+
     export let playlist
-    const convertTime = (time) => {
-        const hours = Math.floor(time / 3600)
-        const minutes = Math.floor((time % 3600) / 60)
-        return `${hours}h. ${minutes} min.`
-    }
 </script>
 
 <section>
@@ -16,7 +13,7 @@
             <div class="flex gap-2 text-gray-500 mt-2">
                 <p>{playlist.nb_tracks} songs</p>
                 <p>|</p>
-                <p>{convertTime(playlist.duration)}</p>
+                <p>{convertTimeWithHours(playlist.duration)}</p>
                 <p>|</p>
                 <p>{playlist.fans} fans</p>
             </div>

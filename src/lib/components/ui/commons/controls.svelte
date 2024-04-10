@@ -9,7 +9,7 @@
   } from "$lib/stores/store.js";
   import { format } from "$lib/utilities.js";
   import PlayButton from "$lib/components/ui/commons/play-button.svelte";
-  import { onMount } from "svelte";
+  import { onMount, afterUpdate } from "svelte";
   import MdVolumeUp from "svelte-icons/md/MdVolumeUp.svelte";
   import MdVolumeOff from "svelte-icons/md/MdVolumeOff.svelte";
   import MdVolumeDown from "svelte-icons/md/MdVolumeDown.svelte";
@@ -99,6 +99,21 @@
   onMount(() => {
     $audioPlayer.load();
   });
+
+  let titleElement;
+
+  onMount(checkTruncation);
+  afterUpdate(checkTruncation);
+
+  function checkTruncation() {
+    if (titleElement && titleElement.scrollWidth > titleElement.clientWidth) {
+      titleElement.classList.add('animate-scroll');
+      titleElement.addEventListener('animationend');
+    } else if (titleElement) {
+      titleElement.classList.remove('animate-scroll');
+    }
+  }
+
 </script>
 
 <audio
@@ -119,14 +134,16 @@
   {src}
 />
 
-<div class="grid grid-cols-6 bg-primary text-white items-center px-6 py-4 fixed bottom-0 w-full">
+<div
+  class="grid grid-cols-6 bg-primary text-white items-center px-6 py-4 fixed bottom-0 w-full"
+>
   <div class="flex items-center gap-4 col-span-1">
     <div class="min-w-14">
       <img src={image} alt="Album cover for {title}" class="w-full" />
     </div>
     <div class="flex-col items-center">
-      <div>
-        <p class="font-bold text-lg">{title}</p>
+      <div class="max-w-xs overflow-hidden">
+        <p class="font-bold text-lg whitespace-nowrap" bind:this={titleElement}>{title}</p>
       </div>
       <div>
         <p>{artist}</p>
@@ -188,3 +205,5 @@
     </div>
   </div>
 </div>
+
+

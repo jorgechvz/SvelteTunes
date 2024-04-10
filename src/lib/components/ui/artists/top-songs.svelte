@@ -6,46 +6,44 @@
   import FaRegClock from "svelte-icons/fa/FaRegClock.svelte";
   import Track from "$lib/components/ui/commons/track.svelte";
   import * as Table from "$lib/components/ui/table";
-  import { index, trackList } from "$lib/stores/store.js";
+  import { index, trackList, currentPage } from "$lib/stores/store.js";
   import { convertTime } from "$lib/utilities";
-  export let searchSongs;
+  export let topSongs;
+  export let id;
   $: playingTrackIndex =
     $trackList.length > 0
-      ? searchSongs.data.findIndex(
+      ? topSongs.data.findIndex(
           (track) =>
             track.title === $trackList[$index].title &&
             track.artist.name === $trackList[$index].artist
         )
       : -1;
-  let currentPage =
-    Math.floor(($page.url.searchParams.get("index") || 0) / perPage) + 1;
-  let currentQuery = $page.url.searchParams.get("q") || "";
+  $: currentPage.set(
+    Math.floor(($page.url.searchParams.get("index") || 0) / perPage) + 1
+  );
 
-  const perPage = 25;
+  const perPage = 10;
 
   const changePage = (page) => {
     const newIndex = Math.max(
       0,
-      Math.min(searchSongs.total - 1, (page - 1) * perPage)
+      Math.min(topSongs.total - 1, (page - 1) * perPage)
     );
-    if (newIndex !== currentPage) {
-      currentPage = newIndex;
-      let newUrl = `/search?q=${currentQuery}&index=${newIndex}`; // Use newIndex in the URL
-      if (currentPage === 0) {
-        newUrl = `/search?q=${currentQuery}`;
+    if (newIndex !== $currentPage) {
+      let newUrl = `/artist/${id}?index=${newIndex}`; // Use newIndex in the URL
+      if (newIndex === 0) {
+        newUrl = `/artist/${id}`;
       }
       goto(newUrl);
     }
   };
   onMount(() => {
-    changePage(currentPage);
+    changePage($currentPage);
   });
 </script>
 
 <div class="flex items-center gap-4">
-  <h2 class="font-bold text-2xl">
-    {searchSongs.total} Songs Found
-  </h2>
+  <h2 class="font-bold text-2xl">Top Songs</h2>
 </div>
 <Table.Root class="mt-10">
   <Table.Header>
@@ -61,7 +59,7 @@
     </Table.Row>
   </Table.Header>
   <Table.Body>
-    {#each searchSongs.data as track, i}
+    {#each topSongs.data as track, i}
       <Table.Row>
         <Table.Cell>
           <div class="flex items-center gap-3 group">
@@ -107,12 +105,12 @@
     {/each}
   </Table.Body>
 </Table.Root>
-<Pagination.Root count={searchSongs.total} {perPage} let:pages let:currentPage>
+<Pagination.Root count={topSongs.total} {perPage} let:pages {$currentPage}>
   <Pagination.Content>
     <Pagination.Item>
       <Pagination.PrevButton
-        on:click={() => changePage(currentPage - 1)}
-        disabled={currentPage === 1}
+        on:click={() => changePage($currentPage - 1)}
+        disabled={$currentPage === 1}
       />
     </Pagination.Item>
     {#each pages as page (page.key)}
@@ -121,10 +119,10 @@
           <Pagination.Ellipsis />
         </Pagination.Item>
       {:else}
-        <Pagination.Item isVisible={currentPage == page.value}>
+        <Pagination.Item isVisible={$currentPage == page.value}>
           <Pagination.Link
             {page}
-            isActive={currentPage == page.value}
+            isActive={$currentPage == page.value}
             on:click={() => changePage(page.value)}
           >
             {page.value}
@@ -133,10 +131,7 @@
       {/if}
     {/each}
     <Pagination.Item>
-      <Pagination.NextButton
-        on:click={() => changePage(currentPage + 1)}
-        disabled={currentPage === searchSongs.total / 25}
-      />
+      <Pagination.NextButton on:click={() => changePage($currentPage + 1)} />
     </Pagination.Item>
   </Pagination.Content>
 </Pagination.Root>
